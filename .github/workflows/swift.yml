@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos_latest
+    runs-on: macos-latest
     outputs:
       artifact: ${{ steps.upload-artifact.outputs.artifact }}
     steps:
@@ -30,28 +30,52 @@ jobs:
           fetch-depth: 1
 
       - name: Checkout Firefox submodule
-        run: git submodule update --init --depth 1 --recursive engine/firefox
+        run: |
+          echo "Starting Firefox submodule checkout..."
+          git submodule update --init --depth 1 --recursive engine/firefox
+          echo "Firefox submodule checkout completed with status: $?"
 
       - name: Checkout idevice submodule
-        run: git submodule update --init --depth 1 --recursive support/idevice
+        run: |
+          echo "Starting idevice submodule checkout..."
+          git submodule update --init --depth 1 --recursive support/idevice
+          echo "idevice submodule checkout completed with status: $?"
 
       - name: Update Gecko
-        run: ./tools/development/update-gecko.sh
+        run: |
+          echo "Starting Gecko update..."
+          ./tools/development/update-gecko.sh
+          echo "Gecko update completed with status: $?"
 
       - name: Apply Gecko patches
-        run: ./tools/development/apply-patches.sh
+        run: |
+          echo "Starting patch application..."
+          ./tools/development/apply-patches.sh
+          echo "Patches applied with status: $?"
 
       - name: Build idevice
-        run: ./tools/development/build-idevice.sh
+        run: |
+          echo "Starting idevice build..."
+          ./tools/development/build-idevice.sh
+          echo "idevice build completed with status: $?"
 
       - name: Build the app
-        run: ./tools/release/build-app.sh
+        run: |
+          echo "Starting app build..."
+          ./tools/release/build-app.sh
+          echo "App build completed with status: $?"
 
       - name: Create .ipa file
-        run: ./tools/release/create-ipa.sh
+        run: |
+          echo "Starting .ipa creation..."
+          ./tools/release/create-ipa.sh
+          echo ".ipa creation completed with status: $?"
 
       - name: Tar build artifact
-        run: tar -czf ./dist/Reynard.xcarchive.tar.gz -C ./dist Reynard.xcarchive
+        run: |
+          echo "Starting tar compression..."
+          tar -czf ./dist/Reynard.xcarchive.tar.gz -C ./dist Reynard.xcarchive
+          echo "Tar compression completed with status: $?"
 
       - name: Upload build artifact
         id: upload-artifact
