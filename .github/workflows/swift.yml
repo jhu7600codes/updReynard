@@ -53,6 +53,9 @@ jobs:
           ./tools/development/apply-patches.sh
           echo "Patches applied with status: $?"
 
+      - name: Check Xcode versions
+        run: ls -la /Applications | grep Xcode
+
       - name: Build idevice
         run: |
           echo "Starting idevice build..."
